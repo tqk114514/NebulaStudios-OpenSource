@@ -1,0 +1,439 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Nebula OpenSource — Editorial Engineering Whitepaper
+ * 设计原则：可读性第一，艺术性其次但不冲击可读性
+ * 主背景温暖纸白，代码区纯白，墨黑文字，锻造朱作关键交互，普鲁士蓝作链接
+ */
+
+:root {
+  /* —— 纸白基色 —— */
+  --paper: #f7f4ed; /* 主背景，温暖纸白 */
+  --paper-pure: #ffffff; /* 代码区/卡片 */
+  --paper-warm: #efeae0; /* 略深纸色，分区 */
+  --paper-deep: #e6e0d3; /* 更深，分割 */
+
+  /* —— 墨色文字阶 —— */
+  --ink: #1a1a18; /* 主文字，近黑 */
+  --ink-soft: #5c5a52; /* 次级文字 */
+  --ink-mute: #9a988f; /* 弱化文字 */
+  --ink-faint: #c2bfb5; /* 极弱，分隔 */
+
+  /* —— 强调色 —— */
+  --vermillion: #e2451c; /* 锻造朱，关键交互 */
+  --vermillion-deep: #b8350f;
+  --vermillion-soft: #f2c3b5;
+  --vermillion-tint: #fae6df;
+
+  --prussian: #1b3a6b; /* 普鲁士蓝，链接/信息 */
+  --prussian-deep: #0f2545;
+  --prussian-soft: #c7d2e0;
+  --prussian-tint: #e8edf5;
+
+  --forest: #2e6b2e; /* 深绿，成功/diff add */
+  --forest-tint: #e6efe3;
+
+  /* —— 发丝线 —— */
+  --line-subtle: rgba(26, 26, 24, 0.1);
+  --line: rgba(26, 26, 24, 0.16);
+  --line-strong: rgba(26, 26, 24, 0.28);
+  --line-accent: rgba(226, 69, 28, 0.4);
+
+  /* —— 工程代码语法色板（高对比白底）—— */
+  --code-bg: #ffffff;
+  --code-fg: #1a1a18;
+  --code-keyword: #0f2545; /* 关键字：深普鲁士蓝 */
+  --code-string: #2e6b2e; /* 字符串：深绿 */
+  --code-comment: #9a988f; /* 注释：灰 */
+  --code-number: #6b3fa0; /* 数字：深紫 */
+  --code-type: #b8350f; /* 类型：深朱 */
+  --code-fn: #1b3a6b; /* 函数名：普鲁士蓝 */
+  --code-punct: #5c5a52; /* 标点：软墨 */
+  --code-line: rgba(26, 26, 24, 0.06); /* 行号背景 */
+  --code-line-fg: #c2bfb5; /* 行号文字 */
+  --code-hover: rgba(26, 26, 24, 0.03); /* 行悬停 */
+  --code-select: rgba(226, 69, 28, 0.12); /* 行选中 */
+  --code-diff-add-bg: rgba(46, 107, 46, 0.08);
+  --code-diff-add-mark: #2e6b2e;
+  --code-diff-del-bg: rgba(226, 69, 28, 0.08);
+  --code-diff-del-mark: #b8350f;
+  --code-diff-hunk: rgba(27, 58, 107, 0.06);
+
+  /* —— 字体 —— */
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+
+  color-scheme: light;
+}
+
+* {
+  border-color: var(--line-subtle);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.65;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  font-feature-settings: "kern", "liga", "calt";
+}
+
+/*
+ * 纸张纤维质感 —— 极轻的颗粒叠层，仅用于营造印刷品质感
+ * 不冲击可读性，opacity 0.018，混合模式 multiply
+ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.018;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+#root {
+  position: relative;
+  z-index: 2;
+  isolation: isolate;
+}
+
+/* —— 字体辅助类 —— */
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.018em;
+  font-optical-sizing: auto;
+}
+.font-display-italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  font-optical-sizing: auto;
+}
+.font-body {
+  font-family: var(--font-body);
+}
+.font-mono {
+  font-family: var(--font-mono);
+  font-feature-settings: "liga" 0, "calt" 0;
+}
+
+/* —— 印刷感标题：字距收紧，行高紧凑 —— */
+.display-tight {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+  font-optical-sizing: auto;
+}
+
+/* —— 元数据小字：大写 + 字距 —— */
+.meta-caps {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* —— 章节编号 § —— */
+.section-mark {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--vermillion);
+}
+
+/* —— 发丝分隔线 —— */
+.hairline {
+  height: 1px;
+  background: var(--line);
+  border: 0;
+}
+.hairline-subtle {
+  height: 1px;
+  background: var(--line-subtle);
+  border: 0;
+}
+.hairline-accent {
+  height: 1px;
+  background: var(--vermillion);
+  border: 0;
+}
+
+/* —— 版心容器（瑞士网格 12 列）—— */
+.editorial-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: 1.5rem;
+}
+
+/* —— 链接基础 —— */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* —— 链接下划线（仅正文链接）—— */
+.link-underline {
+  color: var(--prussian);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  transition: text-decoration-color 0.18s ease, color 0.18s ease;
+}
+.link-underline:hover {
+  text-decoration-color: var(--vermillion);
+  color: var(--vermillion-deep);
+}
+
+/* —— 选区（朱砂轻染）—— */
+::selection {
+  background: var(--vermillion-tint);
+  color: var(--vermillion-deep);
+}
+
+/* —— 滚动条（极简纸感）—— */
+/* 全局（html）滚动条隐藏，元素内部滚动条保留 */
+html::-webkit-scrollbar {
+  display: none;
+}
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--line-strong);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+
+/* —— 焦点可见（朱砂描边）—— */
+:focus-visible {
+  outline: 2px solid var(--vermillion);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* —— 纸白卡片（无毛玻璃，纯纸感）—— */
+.paper-card {
+  background: var(--paper-pure);
+  border: 1px solid var(--line-subtle);
+  box-shadow: 0 1px 0 rgba(26, 26, 24, 0.04), 0 8px 24px -16px rgba(26, 26, 24, 0.1);
+}
+
+/* —— 代码区（纯白高对比）—— */
+.code-surface {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  font-family: var(--font-mono);
+  font-feature-settings: "liga" 0, "calt" 0;
+}
+
+/* —— 闪烁光标（朱砂方块）—— */
+.caret::after {
+  content: "";
+  display: inline-block;
+  width: 0.5ch;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background: var(--vermillion);
+  animation: caret-blink 1.05s steps(1) infinite;
+}
+
+/* —— 代码滚动条 —— */
+.code-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+.code-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.code-scroll::-webkit-scrollbar-thumb {
+  background: var(--line-subtle);
+  border-radius: 999px;
+}
+
+/* —— 隐藏滚动条但可滚动 —— */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* —— 网格背景（极淡纸格）—— */
+.bg-paper-grid {
+  background-image: linear-gradient(to right, rgba(26, 26, 24, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(26, 26, 24, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+.bg-paper-grid-fade {
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+}
+
+/* —— 线条绘制动画（用于发丝线揭示）—— */
+.draw-line-x {
+  transform-origin: left center;
+  animation: draw-line 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* —— 排版细节 —— */
+.prose-editorial {
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--ink);
+}
+.prose-editorial p {
+  margin: 0 0 1.1em;
+}
+.prose-editorial p + p {
+  margin-top: 0;
+}
+.prose-editorial h2,
+.prose-editorial h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--ink);
+  margin: 2em 0 0.7em;
+}
+.prose-editorial h2 {
+  font-size: 1.6rem;
+}
+.prose-editorial h3 {
+  font-size: 1.25rem;
+}
+.prose-editorial a {
+  color: var(--prussian);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+.prose-editorial a:hover {
+  color: var(--vermillion-deep);
+  text-decoration-color: var(--vermillion);
+}
+.prose-editorial code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--paper-warm);
+  padding: 0.1em 0.4em;
+  border-radius: 2px;
+  border: 1px solid var(--line-subtle);
+  color: var(--vermillion-deep);
+}
+.prose-editorial pre {
+  background: var(--code-bg);
+  border: 1px solid var(--line-subtle);
+  border-radius: 4px;
+  padding: 1.1rem 1.25rem;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin: 1.4em 0;
+}
+.prose-editorial pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--code-fg);
+  font-size: inherit;
+}
+.prose-editorial blockquote {
+  margin: 1.4em 0;
+  padding: 0.2em 0 0.2em 1.2em;
+  border-left: 2px solid var(--vermillion);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--ink-soft);
+}
+.prose-editorial ul,
+.prose-editorial ol {
+  margin: 0 0 1.1em;
+  padding-left: 1.4em;
+}
+.prose-editorial li {
+  margin: 0.3em 0;
+}
+.prose-editorial hr {
+  border: 0;
+  height: 1px;
+  background: var(--line-subtle);
+  margin: 2em 0;
+}
+.prose-editorial table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.4em 0;
+  font-size: 0.9rem;
+}
+.prose-editorial th,
+.prose-editorial td {
+  border-bottom: 1px solid var(--line-subtle);
+  padding: 0.55em 0.7em;
+  text-align: left;
+}
+.prose-editorial th {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border-bottom-color: var(--line);
+}
+
+/* —— 动效偏好 —— */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
