@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+﻿import { useState } from "react";
+import { useParams } from "react-router";
 import { motion } from "motion/react";
 import {
   ArrowLeft,
@@ -121,7 +121,7 @@ export default function PullRequest() {
               >
                 <t.icon className="h-4 w-4" />
                 {t.label}
-                <span className="rounded-sm bg-paper-warm px-1.5 py-0.5 font-mono text-[0.65rem]">{t.count}</span>
+                <span className="rounded-xs bg-paper-warm px-1.5 py-0.5 font-mono text-[0.65rem]">{t.count}</span>
                 {tab === t.v && (
                   <motion.span
                     layoutId="pr-tab"
@@ -156,7 +156,7 @@ export default function PullRequest() {
                           <span className="text-sm font-medium text-ink">{c.author}</span>
                           <span className="font-mono text-xs text-ink-mute">评论于 {timeAgo(c.createdAt)}</span>
                           {i === 0 && (
-                            <span className="ml-auto inline-flex items-center gap-1 rounded-sm bg-vermillion-tint px-2 py-0.5 font-mono text-[0.65rem] text-vermillion-deep">
+                            <span className="ml-auto inline-flex items-center gap-1 rounded-xs bg-vermillion-tint px-2 py-0.5 font-mono text-[0.65rem] text-vermillion-deep">
                               作者
                             </span>
                           )}

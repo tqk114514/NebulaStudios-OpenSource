@@ -31,7 +31,6 @@ function tokenizeLine(line: string, lang: string): Token[] {
   const kwKey = langToKey[lang] || "shell";
   const keywords = keywordSets[kwKey] || [];
   const tokens: Token[] = [];
-  let i = 0;
 
   // 注释优先（// 或 #）
   const commentMatch = line.match(/(\/\/.*$|#.*$)/);

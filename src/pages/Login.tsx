@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+﻿import { useState, type FormEvent } from "react";
+import { useNavigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Mail,
@@ -122,12 +122,12 @@ export default function Login() {
               <button
                 key={m}
                 onClick={() => setMode(m)}
-                className="relative flex-1 rounded-sm px-4 py-2 text-sm font-medium transition-colors"
+                className="relative flex-1 rounded-xs px-4 py-2 text-sm font-medium transition-colors"
               >
                 {mode === m && (
                   <motion.span
                     layoutId="auth-mode"
-                    className="absolute inset-0 rounded-sm bg-vermillion-tint border border-vermillion/30"
+                    className="absolute inset-0 rounded-xs bg-vermillion-tint border border-vermillion/30"
                     transition={{ type: "spring", stiffness: 400, damping: 32 }}
                   />
                 )}

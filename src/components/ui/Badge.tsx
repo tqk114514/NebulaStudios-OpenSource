@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode } from "react";
+﻿import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import type { IssueLabel, PRStatus, IssueStatus } from "@/types";
 import { labelMeta } from "@/data/issues";
@@ -33,7 +33,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-sm px-2 py-0.5 font-mono text-[0.7rem] font-medium leading-5",
+        "inline-flex items-center gap-1 rounded-xs px-2 py-0.5 font-mono text-[0.7rem] font-medium leading-5",
         variantClass,
         className,
       )}

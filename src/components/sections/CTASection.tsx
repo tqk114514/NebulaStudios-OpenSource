@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router";
 import { motion } from "motion/react";
 import { ArrowUpRight, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -20,7 +20,7 @@ export function CTASection() {
           variants={staggerContainer(0.08)}
           className="relative flex flex-col items-center gap-6 overflow-hidden rounded-md border border-line-subtle border-l-2 border-l-vermillion bg-paper-pure px-8 py-20 text-center shadow-page md:px-16 md:py-28"
         >
-          <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-sm border border-vermillion/30 bg-vermillion-tint px-3.5 py-1.5">
+          <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-xs border border-vermillion/30 bg-vermillion-tint px-3.5 py-1.5">
             <Rocket className="h-3.5 w-3.5 text-vermillion" />
             <span className="meta-caps text-vermillion-deep">三分钟自托管</span>
           </motion.div>

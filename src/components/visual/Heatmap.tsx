@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+﻿import { useMemo, useState } from "react";
 import { motion } from "motion/react";
 
 interface HeatmapProps {
@@ -122,7 +122,7 @@ export function Heatmap({ username, className }: HeatmapProps) {
                     }}
                     onMouseEnter={() => setHover(cell)}
                     onMouseLeave={() => setHover(null)}
-                    className="h-[12px] w-[12px] rounded-sm border border-line-subtle transition-transform hover:scale-125"
+                    className="h-[12px] w-[12px] rounded-xs border border-line-subtle transition-transform hover:scale-125"
                     style={{ backgroundColor: levelColor(cell.count) }}
                   />
                 ))}
@@ -136,7 +136,7 @@ export function Heatmap({ username, className }: HeatmapProps) {
             {[0, 1, 2, 3, 4].map((l) => (
               <span
                 key={l}
-                className="h-[11px] w-[11px] rounded-sm border border-line-subtle"
+                className="h-[11px] w-[11px] rounded-xs border border-line-subtle"
                 style={{ backgroundColor: levelColor(l === 0 ? 0 : l * 3) }}
               />
             ))}

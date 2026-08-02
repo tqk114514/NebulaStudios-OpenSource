@@ -1,12 +1,103 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /*
  * Nebula OpenSource — Editorial Engineering Whitepaper
  * 设计原则：可读性第一，艺术性其次但不冲击可读性
  * 主背景温暖纸白，代码区纯白，墨黑文字，锻造朱作关键交互，普鲁士蓝作链接
  */
+
+/* —— Tailwind v4 CSS-first 配置：设计令牌（原 tailwind.config.js theme.extend）—— */
+@theme {
+  /* 纸白基色 */
+  --color-paper: #f7f4ed; /* 主背景，温暖纸白 */
+  --color-paper-pure: #ffffff; /* 代码区/卡片 */
+  --color-paper-warm: #efeae0; /* 略深纸色，分区 */
+  --color-paper-deep: #e6e0d3; /* 更深，分割 */
+
+  /* 墨色文字阶 */
+  --color-ink: #1a1a18; /* 主文字，近黑 */
+  --color-ink-soft: #5c5a52; /* 次级文字 */
+  --color-ink-mute: #9a988f; /* 弱化文字 */
+  --color-ink-faint: #c2bfb5; /* 极弱，分隔 */
+
+  /* 强调色 */
+  --color-vermillion: #e2451c; /* 锻造朱，关键交互 */
+  --color-vermillion-deep: #b8350f;
+  --color-vermillion-soft: #f2c3b5;
+  --color-vermillion-tint: #fae6df;
+
+  --color-prussian: #1b3a6b; /* 普鲁士蓝，链接/信息 */
+  --color-prussian-deep: #0f2545;
+  --color-prussian-soft: #c7d2e0;
+  --color-prussian-tint: #e8edf5;
+
+  --color-forest: #2e6b2e; /* 深绿，成功/diff add */
+  --color-forest-tint: #e6efe3;
+
+  /* 发丝线 */
+  --color-line-subtle: rgba(26, 26, 24, 0.1);
+  --color-line: rgba(26, 26, 24, 0.16);
+  --color-line-strong: rgba(26, 26, 24, 0.28);
+  --color-line-accent: rgba(226, 69, 28, 0.4);
+
+  /* 字体 */
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+
+  /* 字距 */
+  --tracking-tightest: -0.045em;
+  --tracking-meta: 0.14em;
+
+  /* 阴影 */
+  --shadow-page: 0 1px 0 rgba(26, 26, 24, 0.06), 0 24px 60px -32px rgba(26, 26, 24, 0.18);
+  --shadow-card: 0 1px 0 rgba(26, 26, 24, 0.05), 0 8px 24px -16px rgba(26, 26, 24, 0.12);
+  --shadow-float: 0 24px 60px -28px rgba(26, 26, 24, 0.22);
+  --shadow-inset: inset 0 0 0 1px rgba(26, 26, 24, 0.12);
+
+  /* 动画 */
+  --animate-caret-blink: caret-blink 1.05s steps(1) infinite;
+  --animate-draw-line: draw-line 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  --animate-float-soft: float-soft 6s ease-in-out infinite;
+
+  @keyframes caret-blink {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes draw-line {
+    0% {
+      transform: scaleX(0);
+    }
+    100% {
+      transform: scaleX(1);
+    }
+  }
+  @keyframes float-soft {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+}
+
+/* —— 版心容器（原 config 的 container: center + padding 1.5rem + 2xl 1320px）—— */
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+  max-width: 100%;
+  @media (width >= 1536px) {
+    max-width: 1320px;
+  }
+}
 
 :root {
   /* —— 纸白基色 —— */
@@ -69,8 +160,22 @@
   color-scheme: light;
 }
 
-* {
-  border-color: var(--line-subtle);
+/*
+ * 全局默认边框色 —— 必须放在 @layer base 里：
+ * tailwind 的 border-* utility 在 @layer utilities,若此处为 unlayered 样式,
+ * 会按 CSS 层叠规范优先于所有 layered 规则,导致 border-transparent、
+ * border-vermillion/60 等颜色 utility 全部失效
+ */
+@layer base {
+  * {
+    border-color: var(--line-subtle);
+  }
+
+  /* tailwind v4 preflight 不再给 button 设置 cursor: pointer,按官方指南恢复 */
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
 html {
@@ -300,12 +405,12 @@ html {
 }
 
 /* —— 网格背景（极淡纸格）—— */
-.bg-paper-grid {
+@utility bg-paper-grid {
   background-image: linear-gradient(to right, rgba(26, 26, 24, 0.04) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(26, 26, 24, 0.04) 1px, transparent 1px);
   background-size: 56px 56px;
 }
-.bg-paper-grid-fade {
+@utility bg-paper-grid-fade {
   -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
   mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
 }

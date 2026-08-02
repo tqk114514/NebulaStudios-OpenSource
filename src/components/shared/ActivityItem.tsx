@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router";
 import { motion } from "motion/react";
 import { GitCommit, GitPullRequest, CircleDot, Star, GitFork, UserPlus } from "lucide-react";
 import type { Activity } from "@/types";
@@ -17,7 +17,7 @@ const activityMeta = {
   follow: { icon: UserPlus, color: "text-ink-soft" },
 };
 
-export function ActivityItem({ activity, index = 0 }: { activity: Activity; index?: number }) {
+export function ActivityItem({ activity }: { activity: Activity }) {
   const actor = getUser(activity.actor);
   const meta = activityMeta[activity.type];
   const Icon = meta.icon;

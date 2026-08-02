@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router";
 import { motion } from "motion/react";
 import { Star, GitFork, CircleDot } from "lucide-react";
 import type { Repository } from "@/types";
@@ -48,7 +48,7 @@ export function RepoCard({ repo, index = 0, showOwner = true, className }: RepoC
           {repo.name}
         </Link>
         {repo.isPrivate && (
-          <span className="rounded-sm border border-line-strong px-2 py-0.5 font-mono text-[0.65rem] text-ink-mute">
+          <span className="rounded-xs border border-line-strong px-2 py-0.5 font-mono text-[0.65rem] text-ink-mute">
             私有
           </span>
         )}

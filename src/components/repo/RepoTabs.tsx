@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+﻿import { useState } from "react";
+import { Link } from "react-router";
 import { Code2, CircleDot, GitPullRequest, Star, GitFork, Eye, Copy, Check } from "lucide-react";
 import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
@@ -112,7 +112,7 @@ export function RepoTabs({
       {topics.length > 0 && (
         <div className="mt-4 flex flex-wrap gap-1.5">
           {topics.map((t) => (
-            <span key={t} className="rounded-sm bg-prussian-tint px-2.5 py-0.5 font-mono text-[0.7rem] text-prussian">
+            <span key={t} className="rounded-xs bg-prussian-tint px-2.5 py-0.5 font-mono text-[0.7rem] text-prussian">
               {t}
             </span>
           ))}
@@ -138,7 +138,7 @@ export function RepoTabs({
               <tab.icon className="h-4 w-4" />
               {tab.label}
               {tab.count !== null && (
-                <span className="rounded-sm bg-paper-pure px-1.5 py-0.5 font-mono text-[0.65rem] text-ink-soft">
+                <span className="rounded-xs bg-paper-pure px-1.5 py-0.5 font-mono text-[0.65rem] text-ink-soft">
                   {tab.count}
                 </span>
               )}

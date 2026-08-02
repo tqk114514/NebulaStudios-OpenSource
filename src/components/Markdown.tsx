@@ -141,7 +141,7 @@ function splitRow(line: string): string[] {
 
 function parseInline(text: string): Inline[] {
   const tokens: Inline[] = [];
-  let rest = text;
+  const rest = text;
   const regex = /(\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`|\[([^\]]+)\]\(([^)]+)\))/g;
   let last = 0;
   let m: RegExpExecArray | null;

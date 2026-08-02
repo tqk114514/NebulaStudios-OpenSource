@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+﻿import { useEffect, useState } from "react";
+import { Link, NavLink, useLocation } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { Search, Menu, X, Plus } from "lucide-react";
 import { BrandMark } from "@/components/ui/BrandMark";
@@ -35,9 +35,13 @@ export function Navbar() {
     };
   }, []);
 
-  useEffect(() => {
+  // 路由变化时关闭移动端菜单 —— render 期间调整 state（React 官方推荐模式，
+  // 避免在 effect 里同步 setState 造成级联渲染）
+  const [lastPath, setLastPath] = useState(location.pathname);
+  if (lastPath !== location.pathname) {
+    setLastPath(location.pathname);
     setMobileOpen(false);
-  }, [location.pathname]);
+  }
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
@@ -94,7 +98,7 @@ export function Navbar() {
             <input
               type="text"
               placeholder="搜索仓库 / 用户..."
-              className="h-9 w-56 rounded-md border border-line-subtle bg-paper-pure pl-9 pr-12 text-sm text-ink placeholder:text-ink-mute outline-none transition-colors focus:border-vermillion/60 lg:w-64"
+              className="h-9 w-56 rounded-md border border-line-subtle bg-paper-pure pl-9 pr-12 text-sm text-ink placeholder:text-ink-mute outline-hidden transition-colors focus:border-vermillion/60 lg:w-64"
             />
             <kbd className="absolute right-2.5 top-1/2 hidden -translate-y-1/2 rounded border border-line-subtle bg-paper-warm px-1.5 py-0.5 font-mono text-[0.65rem] text-ink-mute lg:block">
               /
