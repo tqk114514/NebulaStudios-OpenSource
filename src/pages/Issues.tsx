@@ -1,5 +1,5 @@
 ﻿import { useMemo, useState } from "react";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import {
   CircleDot,
@@ -90,7 +90,7 @@ export default function Issues() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="筛选 issue..."
-              className="h-9 w-full rounded-md border border-line-subtle bg-paper-pure pl-9 pr-3 text-sm text-ink placeholder:text-ink-mute outline-none focus:border-vermillion/40"
+              className="h-9 w-full rounded-md border border-line-subtle bg-paper-pure pl-9 pr-3 text-sm text-ink placeholder:text-ink-mute outline-hidden focus:border-vermillion/40"
             />
           </div>
 
@@ -136,8 +136,12 @@ export default function Issues() {
                         key={issue.id}
                         variants={fadeUp}
                         whileHover={{ x: 2 }}
-                        className="flex items-start gap-3 px-5 py-4 transition-colors hover:bg-paper-warm"
+                        className="transition-colors hover:bg-paper-warm"
                       >
+                        <Link
+                          to={`/${repo.owner}/${repo.name}/issues/${issue.number}`}
+                          className="flex items-start gap-3 px-5 py-4"
+                        >
                         {issue.status === "open" ? (
                           <CircleDot className="mt-1 h-4 w-4 shrink-0 text-vermillion" />
                         ) : (
@@ -165,6 +169,7 @@ export default function Issues() {
                             {issue.comments.length}
                           </span>
                         )}
+                        </Link>
                       </motion.div>
                     );
                   })}
@@ -175,6 +180,7 @@ export default function Issues() {
             <BoardView
               key="board"
               issues={filtered}
+              repoKey={`${repo.owner}/${repo.name}`}
             />
           )}
         </AnimatePresence>
@@ -182,7 +188,7 @@ export default function Issues() {
   );
 }
 
-function BoardView({ issues }: { issues: ReturnType<typeof getIssuesForRepo> }) {
+function BoardView({ issues, repoKey }: { issues: ReturnType<typeof getIssuesForRepo>; repoKey: string }) {
   const open = issues.filter((i) => i.status === "open");
   const closed = issues.filter((i) => i.status === "closed");
 
@@ -211,7 +217,12 @@ function BoardView({ issues }: { issues: ReturnType<typeof getIssuesForRepo> }) 
                 animate={{ opacity: 1, scale: 1 }}
                 className="rounded-md border border-line-subtle bg-paper-pure p-3 transition-colors hover:border-line-strong"
               >
-                <p className="text-sm text-ink">{issue.title}</p>
+                <Link
+                  to={`/${repoKey}/issues/${issue.number}`}
+                  className="text-sm text-ink hover:text-vermillion"
+                >
+                  {issue.title}
+                </Link>
                 <div className="mt-2 flex flex-wrap items-center gap-1.5">
                   {issue.labels.slice(0, 2).map((l) => (
                     <LabelBadge key={l} label={l} />

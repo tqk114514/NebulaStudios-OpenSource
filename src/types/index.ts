@@ -75,6 +75,7 @@ export interface Issue {
   number: number;
   repoKey: string; // owner/repo
   title: string;
+  body: string;
   status: IssueStatus;
   labels: IssueLabel[];
   author: string;
@@ -120,6 +121,7 @@ export interface PullRequest {
   author: string;
   branch: string;
   baseBranch: string;
+  commits: number;
   additions: number;
   deletions: number;
   createdAt: string;

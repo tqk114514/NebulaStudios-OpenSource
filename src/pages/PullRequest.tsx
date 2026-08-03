@@ -1,5 +1,5 @@
 ﻿import { useState } from "react";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { motion } from "motion/react";
 import {
   ArrowLeft,
@@ -54,6 +54,15 @@ export default function PullRequest() {
       initial="initial"
       animate="animate"
     >
+      {/* 返回 */}
+      <Link
+        to={`/${repo.owner}/${repo.name}/pulls`}
+        className="mt-6 mb-4 inline-flex items-center gap-2 text-sm text-ink-soft transition-colors hover:text-ink"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        返回 Pull Requests
+      </Link>
+
       {/* 标题区 */}
       <div className="mb-6 flex flex-col gap-3">
           <div className="flex flex-wrap items-start gap-3">
@@ -70,7 +79,7 @@ export default function PullRequest() {
             <div className="flex items-center gap-2">
               {author && <Avatar username={author.username} name={author.name} hue={author.avatarHue} size={22} />}
               <span>
-                <span className="font-medium text-ink">{pr.author}</span> 想合并 {pr.comments.length} 条评论
+                <span className="font-medium text-ink">{pr.author}</span> 想合并 {pr.commits} 个提交
               </span>
             </div>
             <span className="inline-flex items-center gap-1.5 rounded-md border border-line-subtle bg-paper-warm px-2.5 py-1 font-mono text-xs">
@@ -184,7 +193,7 @@ export default function PullRequest() {
                     className="h-24 w-full resize-none bg-transparent px-4 py-3 text-sm text-ink placeholder:text-ink-mute outline-none"
                   />
                   <div className="flex justify-end gap-2 border-t border-line-subtle px-4 py-2.5">
-                    <Button variant="secondary" size="sm">关闭 Issue</Button>
+                    <Button variant="secondary" size="sm">取消</Button>
                     <Button size="sm">评论</Button>
                   </div>
                 </div>

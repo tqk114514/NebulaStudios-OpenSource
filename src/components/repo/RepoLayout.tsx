@@ -12,7 +12,7 @@ export function RepoLayout() {
   const { owner, repo: repoName } = useParams<{ owner: string; repo: string }>();
   const repo = owner && repoName ? getRepo(owner, repoName) : undefined;
 
-  const matchIssues = useMatch("/:owner/:repo/issues");
+  const matchIssues = useMatch("/:owner/:repo/issues/*");
   const matchPulls = useMatch("/:owner/:repo/pulls/*");
   const currentTab: RepoTabKey = matchIssues ? "issues" : matchPulls ? "pulls" : "";
 

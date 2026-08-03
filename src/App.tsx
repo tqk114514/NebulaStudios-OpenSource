@@ -10,6 +10,7 @@ import Login from "@/pages/Login";
 import Profile from "@/pages/Profile";
 import Repository from "@/pages/Repository";
 import Issues from "@/pages/Issues";
+import IssueDetail from "@/pages/IssueDetail";
 import Pulls from "@/pages/Pulls";
 import PullRequest from "@/pages/PullRequest";
 
@@ -74,6 +75,7 @@ function AnimatedRoutes() {
         <Route path="/:owner/:repo" element={<RepoLayout />}>
           <Route index element={<Repository />} />
           <Route path="issues" element={<Issues />} />
+          <Route path="issues/:id" element={<IssueDetail />} />
           <Route path="pulls" element={<Pulls />} />
           <Route path="pulls/:id" element={<PullRequest />} />
         </Route>

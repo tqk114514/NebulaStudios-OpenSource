@@ -17,6 +17,7 @@ export const issues: Issue[] = [
     number: 412,
     repoKey: "aurora/forge-core",
     title: "大仓库 clone 时内存峰值过高（>2GB）",
+    body: "克隆 linux 内核这类大仓库时,pack 解析阶段一次性载入全部字节,RSS 峰值超过 2GB。建议改为流式解析,边读边解,降低大仓库的客户端内存门槛。",
     status: "open",
     labels: ["bug", "enhancement"],
     author: "kael",
@@ -32,6 +33,7 @@ export const issues: Issue[] = [
     number: 411,
     repoKey: "aurora/forge-core",
     title: "支持 Git LFS 的基础对象存储后端",
+    body: "设计类仓库(Blender 工程、贴图资源)体积很快会超过普通 Git 仓库的承受范围。希望在 forge-core 内置 LFS 支持,后端可接 S3 / MinIO,默认对象过期策略可配置。",
     status: "open",
     labels: ["feature", "help-wanted"],
     author: "mira",
@@ -45,6 +47,7 @@ export const issues: Issue[] = [
     number: 409,
     repoKey: "aurora/forge-core",
     title: "Webhook 签名头使用 SHA-256 而非 SHA-1",
+    body: "当前 webhook 签名用 HMAC-SHA1 已不满足安全基线。建议默认升级为 HMAC-SHA256,旧头保留一段时间做兼容,并在文档中标注弃用时间线。",
     status: "closed",
     labels: ["enhancement"],
     author: "nyx",
@@ -60,6 +63,7 @@ export const issues: Issue[] = [
     number: 405,
     repoKey: "aurora/forge-core",
     title: "文档：补充自定义 Hook 编写指南",
+    body: "不少新用户想写 pre-receive hook 做分支保护,但不知道钩子的生命周期和返回值约定。希望补一份图文指南,含一个最小可运行的示例。",
     status: "closed",
     labels: ["docs", "good-first-issue"],
     author: "soren",
@@ -74,6 +78,7 @@ export const issues: Issue[] = [
     number: 88,
     repoKey: "mira/motion-kit",
     title: "useMagnetic 在触摸设备上应自动禁用",
+    body: "移动端长按会触发磁吸偏移,视觉上很怪。建议在钩子内部检测 pointer: coarse,触摸设备直接跳过磁吸逻辑,保留 hover 态即可。",
     status: "open",
     labels: ["bug", "good-first-issue"],
     author: "drift",
@@ -87,6 +92,7 @@ export const issues: Issue[] = [
     number: 87,
     repoKey: "mira/motion-kit",
     title: "新增 useReducedMotion 全局开关",
+    body: "部分用户对位移动画敏感,希望提供一个全局开关 useReducedMotion,可在应用入口统一关闭所有非必要动画,同时尊重系统的 prefers-reduced-motion。",
     status: "open",
     labels: ["feature", "enhancement"],
     author: "mira",
@@ -98,6 +104,7 @@ export const issues: Issue[] = [
     number: 156,
     repoKey: "kael/tide-db",
     title: "预投票阶段网络分区后出现活锁",
+    body: "集群三分区时,预投票阶段的节点在分区恢复后进入活锁:一直互相投票但永远无法选出 Leader。怀疑是 PreVote 没有重置 election elapsed。",
     status: "closed",
     labels: ["bug"],
     author: "kael",
@@ -112,6 +119,7 @@ export const issues: Issue[] = [
     number: 152,
     repoKey: "kael/tide-db",
     title: "支持只读节点（Learner）",
+    body: "线上副本只承担读流量,不希望参与投票与选主。希望引入 Learner 角色:异步追赶日志、不投票、可平滑升级为 Voter。",
     status: "open",
     labels: ["feature", "help-wanted"],
     author: "soren",
@@ -123,6 +131,7 @@ export const issues: Issue[] = [
     number: 41,
     repoKey: "soren/forge-runner",
     title: "缓存键未区分 architecture，跨平台命中错误产物",
+    body: "runner 的缓存键只包含依赖指纹,没包含 GOARCH/GOOS。arm64 与 amd64 共享同一 key,导致拿到错误架构的预编译产物,构建时静默失败。",
     status: "open",
     labels: ["bug"],
     author: "aurora",
@@ -137,6 +146,7 @@ export const issues: Issue[] = [
     number: 39,
     repoKey: "soren/forge-runner",
     title: "job 超时后容器残留，泄漏 inode",
+    body: "job 执行超时被 kill 后,容器没有走清理路径,每次泄漏一个容器和若干 inode。长期跑下来宿主机 inode 耗尽,需要超时即强制清理。",
     status: "closed",
     labels: ["bug"],
     author: "drift",
@@ -149,6 +159,7 @@ export const issues: Issue[] = [
     number: 73,
     repoKey: "nyx/zk-starter",
     title: "可信设置仪式的文档缺失",
+    body: "zk-starter 的可信设置(trusted setup)涉及多轮交互,目前只有代码没有文档。新人无法独立完成一次设置仪式,建议补逐步指南与安全注意事项。",
     status: "open",
     labels: ["docs", "good-first-issue"],
     author: "mira",
@@ -160,6 +171,7 @@ export const issues: Issue[] = [
     number: 22,
     repoKey: "drift/micro-kernel",
     title: "调度器在 4 核以上偶发优先级反转",
+    body: "4 核以上环境偶发出现低优先级任务长期霸占 CPU,高优先级任务饿死。怀疑是 per-core runqueue 的迁移逻辑在 NUMA 下有问题,需要可复现用例。",
     status: "open",
     labels: ["bug", "help-wanted"],
     author: "aurora",
@@ -170,4 +182,8 @@ export const issues: Issue[] = [
 
 export function getIssuesForRepo(repoKey: string): Issue[] {
   return issues.filter((i) => i.repoKey === repoKey);
+}
+
+export function getIssue(repoKey: string, number: number): Issue | undefined {
+  return issues.find((i) => i.repoKey === repoKey && i.number === number);
 }
