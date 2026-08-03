@@ -1,6 +1,6 @@
 ﻿import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import type { IssueLabel, PRStatus, IssueStatus } from "@/types";
+import type { IssueLabel, IssueStatus } from "@/types";
 import { labelMeta } from "@/data/issues";
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
@@ -55,26 +55,6 @@ export function LabelBadge({ label }: { label: IssueLabel }) {
   return (
     <Badge color={meta.color} bg={meta.bg}>
       {meta.name}
-    </Badge>
-  );
-}
-
-const prStatusMeta: Record<PRStatus, { label: string; color: string; bg: string; dot: string }> = {
-  open: { label: "Open", color: "#2E6B2E", bg: "#E6EFE3", dot: "#2E6B2E" },
-  merged: { label: "Merged", color: "#6B3FA0", bg: "#EDE6F5", dot: "#6B3FA0" },
-  closed: { label: "Closed", color: "#B8350F", bg: "#FAE6DF", dot: "#E2451C" },
-  draft: { label: "Draft", color: "#5C5A52", bg: "#EFEAE0", dot: "#9A988F" },
-};
-
-export function PRStatusBadge({ status }: { status: PRStatus }) {
-  const meta = prStatusMeta[status];
-  return (
-    <Badge color={meta.color} bg={meta.bg}>
-      <span
-        className="inline-block h-1.5 w-1.5 rounded-full"
-        style={{ backgroundColor: meta.dot }}
-      />
-      {meta.label}
     </Badge>
   );
 }

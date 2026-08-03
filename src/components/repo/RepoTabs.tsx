@@ -1,6 +1,6 @@
 ﻿import { useState } from "react";
 import { Link } from "react-router";
-import { Code2, CircleDot, GitPullRequest, Star, GitFork, Eye, Copy, Check } from "lucide-react";
+import { Code2, CircleDot, Star, GitFork, Eye, Copy, Check } from "lucide-react";
 import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -8,7 +8,7 @@ import { getUser } from "@/data/users";
 import { compactNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
-export type RepoTabKey = "" | "issues" | "pulls";
+export type RepoTabKey = "" | "issues";
 
 interface RepoTabsProps {
   owner: string;
@@ -19,7 +19,6 @@ interface RepoTabsProps {
   watchers: number;
   topics: string[];
   openIssues: number;
-  openPRs: number;
   currentTab: RepoTabKey;
   className?: string;
 }
@@ -37,7 +36,6 @@ export function RepoTabs({
   watchers,
   topics,
   openIssues,
-  openPRs,
   currentTab,
   className,
 }: RepoTabsProps) {
@@ -57,7 +55,6 @@ export function RepoTabs({
   const tabs: { label: string; icon: typeof Code2; to: RepoTabKey; count: number | null }[] = [
     { label: "代码", icon: Code2, to: "", count: null },
     { label: "Issues", icon: CircleDot, to: "issues", count: openIssues },
-    { label: "Pull Requests", icon: GitPullRequest, to: "pulls", count: openPRs },
   ];
 
   return (

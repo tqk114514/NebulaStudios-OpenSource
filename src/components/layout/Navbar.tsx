@@ -1,5 +1,5 @@
 ﻿import { useEffect, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router";
+import { Link, NavLink, useLocation, useNavigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { Search, Menu, X, Plus } from "lucide-react";
 import { BrandMark } from "@/components/ui/BrandMark";
@@ -19,7 +19,11 @@ const navLinks = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
+  // Explore 页自带大搜索框,此处隐藏导航栏搜索框避免重复
+  const hideSearch = location.pathname === "/explore";
 
   useEffect(() => {
     let raf = 0;
@@ -93,17 +97,37 @@ export function Navbar() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          <div className="relative hidden sm:block">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-mute" />
-            <input
-              type="text"
-              placeholder="搜索仓库 / 用户..."
-              className="h-9 w-56 rounded-md border border-line-subtle bg-paper-pure pl-9 pr-12 text-sm text-ink placeholder:text-ink-mute outline-hidden transition-colors focus:border-vermillion/60 lg:w-64"
-            />
-            <kbd className="absolute right-2.5 top-1/2 hidden -translate-y-1/2 rounded border border-line-subtle bg-paper-warm px-1.5 py-0.5 font-mono text-[0.65rem] text-ink-mute lg:block">
-              /
-            </kbd>
-          </div>
+          <AnimatePresence initial={false}>
+            {!hideSearch && (
+              <motion.div
+                key="nav-search"
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -8 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className="hidden sm:block"
+              >
+                <div className="relative">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-mute" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && searchQuery.trim()) {
+                        navigate(`/explore?q=${encodeURIComponent(searchQuery.trim())}`);
+                      }
+                    }}
+                    placeholder="搜索仓库 / 用户 / 主题..."
+                    className="h-9 w-56 rounded-md border border-line-subtle bg-paper-pure pl-9 pr-12 text-sm text-ink placeholder:text-ink-mute outline-hidden transition-colors focus:border-vermillion/60 lg:w-64"
+                  />
+                  <kbd className="absolute right-2.5 top-1/2 hidden -translate-y-1/2 rounded border border-line-subtle bg-paper-warm px-1.5 py-0.5 font-mono text-[0.65rem] text-ink-mute lg:block">
+                    /
+                  </kbd>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <Link to="/dashboard" className="hidden md:block">
             <Button variant="secondary" size="sm" leftIcon={<Plus className="h-4 w-4" />}>

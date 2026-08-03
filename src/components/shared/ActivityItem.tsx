@@ -1,6 +1,6 @@
 ﻿import { Link } from "react-router";
 import { motion } from "motion/react";
-import { GitCommit, GitPullRequest, CircleDot, Star, GitFork, UserPlus } from "lucide-react";
+import { GitCommit, CircleDot, Star, GitFork, UserPlus } from "lucide-react";
 import type { Activity } from "@/types";
 import { Avatar } from "@/components/ui/Avatar";
 import { getUser } from "@/data/users";
@@ -10,7 +10,6 @@ import { cn } from "@/lib/utils";
 
 const activityMeta = {
   commit: { icon: GitCommit, color: "text-vermillion" },
-  pr: { icon: GitPullRequest, color: "text-prussian" },
   issue: { icon: CircleDot, color: "text-forest" },
   star: { icon: Star, color: "text-vermillion" },
   fork: { icon: GitFork, color: "text-prussian" },

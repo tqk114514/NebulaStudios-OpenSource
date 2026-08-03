@@ -11,8 +11,6 @@ import Profile from "@/pages/Profile";
 import Repository from "@/pages/Repository";
 import Issues from "@/pages/Issues";
 import IssueDetail from "@/pages/IssueDetail";
-import Pulls from "@/pages/Pulls";
-import PullRequest from "@/pages/PullRequest";
 
 /**
  * 路由 key：仓库子路由（/:owner/:repo/*）共用 /:owner/:repo 作为 key，
@@ -76,8 +74,6 @@ function AnimatedRoutes() {
           <Route index element={<Repository />} />
           <Route path="issues" element={<Issues />} />
           <Route path="issues/:id" element={<IssueDetail />} />
-          <Route path="pulls" element={<Pulls />} />
-          <Route path="pulls/:id" element={<PullRequest />} />
         </Route>
       </Routes>
     </AnimatePresence>

@@ -84,52 +84,6 @@ export interface Issue {
   comments: IssueComment[];
 }
 
-export type PRStatus = "open" | "merged" | "closed" | "draft";
-export type CheckStatus = "pass" | "fail" | "pending" | "running";
-
-export interface CheckItem {
-  name: string;
-  status: CheckStatus;
-  duration: string;
-}
-
-export interface DiffFile {
-  path: string;
-  additions: number;
-  deletions: number;
-  hunks: DiffHunk[];
-}
-
-export interface DiffHunk {
-  header: string;
-  lines: DiffLine[];
-}
-
-export interface DiffLine {
-  type: "add" | "del" | "context";
-  oldNo?: number;
-  newNo?: number;
-  content: string;
-}
-
-export interface PullRequest {
-  id: number;
-  number: number;
-  repoKey: string;
-  title: string;
-  status: PRStatus;
-  author: string;
-  branch: string;
-  baseBranch: string;
-  commits: number;
-  additions: number;
-  deletions: number;
-  createdAt: string;
-  checks: CheckItem[];
-  files: DiffFile[];
-  comments: IssueComment[];
-}
-
 export type FileNodeType = "file" | "dir";
 
 export interface FileNode {
@@ -141,7 +95,7 @@ export interface FileNode {
   size?: number;
 }
 
-export type ActivityType = "commit" | "pr" | "issue" | "star" | "fork" | "follow";
+export type ActivityType = "commit" | "issue" | "star" | "fork" | "follow";
 
 export interface Activity {
   id: string;

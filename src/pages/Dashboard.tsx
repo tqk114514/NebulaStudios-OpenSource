@@ -1,13 +1,10 @@
-﻿import { Link } from "react-router";
+﻿import { useMemo, useState } from "react";
+import { Link } from "react-router";
 import { motion } from "motion/react";
 import {
   Plus,
   Home,
   FolderGit2,
-  Star,
-  Users,
-  Settings,
-  BookMarked,
   Bell,
   Search,
   Upload,
@@ -23,18 +20,29 @@ import { getFeedActivities } from "@/data/activity";
 import { staggerContainer, fadeUp } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
+// 单用户自托管场景：只保留有落点的导航项（其余无对应页面，已移除）
 const navItems = [
-  { icon: Home, label: "概览", active: true },
-  { icon: FolderGit2, label: "仓库", count: currentUser.repos },
-  { icon: Star, label: "星标" },
-  { icon: Users, label: "关注" },
-  { icon: BookMarked, label: "收藏" },
-  { icon: Settings, label: "设置" },
+  { icon: Home, label: "概览", to: "/dashboard" },
+  { icon: FolderGit2, label: "仓库", to: `/${currentUser.username}`, count: currentUser.repos },
 ];
 
 export default function Dashboard() {
   const myRepos = repos.filter((r) => r.owner === currentUser.username);
   const feed = getFeedActivities();
+
+  // 我的仓库搜索（本地过滤）
+  const [query, setQuery] = useState("");
+  const filteredRepos = useMemo(() => {
+    if (!query.trim()) return myRepos;
+    const q = query.toLowerCase();
+    return myRepos.filter(
+      (r) =>
+        r.name.toLowerCase().includes(q) ||
+        r.description.toLowerCase().includes(q) ||
+        r.language.toLowerCase().includes(q) ||
+        r.topics.some((t) => t.toLowerCase().includes(q)),
+    );
+  }, [myRepos, query]);
 
   return (
     <PageShell showFooter={false}>
@@ -76,11 +84,12 @@ export default function Dashboard() {
             {/* 导航 */}
             <motion.nav variants={fadeUp} className="flex flex-col gap-1 rounded-md border border-line-subtle bg-paper-pure p-2">
               {navItems.map((item) => (
-                <button
+                <Link
                   key={item.label}
+                  to={item.to}
                   className={cn(
                     "flex items-center gap-3 rounded-md px-3 py-2 text-left text-sm transition-colors",
-                    item.active
+                    item.to === "/dashboard"
                       ? "bg-vermillion-tint text-ink"
                       : "text-ink-soft hover:bg-paper-warm hover:text-ink",
                   )}
@@ -90,7 +99,7 @@ export default function Dashboard() {
                   {item.count !== undefined && (
                     <span className="font-mono text-xs text-ink-mute">{item.count}</span>
                   )}
-                </button>
+                </Link>
               ))}
             </motion.nav>
 
@@ -111,7 +120,7 @@ export default function Dashboard() {
                     下午好，<span className="text-vermillion">{currentUser.name.split(" ")[0]}</span>
                   </h1>
                   <p className="mt-1 text-sm text-ink-soft">
-                    你有 3 个未读通知，2 个 PR 等待评审。
+                    你有 3 个未读通知，2 个 Issue 等待处理。
                   </p>
                 </div>
                 <div className="flex gap-2">
@@ -127,8 +136,10 @@ export default function Dashboard() {
               <div className="relative">
                 <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-mute" />
                 <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
                   placeholder="在你的仓库中搜索..."
-                  className="h-11 w-full rounded-md border border-line-subtle bg-paper-pure pl-10 pr-4 text-sm text-ink placeholder:text-ink-mute outline-none focus:border-vermillion/40"
+                  className="h-11 w-full rounded-md border border-line-subtle bg-paper-pure pl-10 pr-4 text-sm text-ink placeholder:text-ink-mute outline-hidden focus:border-vermillion/40"
                 />
               </div>
             </motion.div>
@@ -149,21 +160,15 @@ export default function Dashboard() {
                 variants={staggerContainer(0.05)}
                 className="grid gap-4 md:grid-cols-2"
               >
-                {myRepos.map((repo, i) => (
+                {filteredRepos.map((repo, i) => (
                   <RepoCard key={`${repo.owner}/${repo.name}`} repo={repo} index={i} showOwner={false} />
                 ))}
-                {/* 新建仓库占位卡 */}
-                <motion.button
-                  variants={fadeUp}
-                  whileHover={{ y: -4 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 24 }}
-                  className="flex min-h-[180px] flex-col items-center justify-center gap-3 rounded-md border border-dashed border-line-strong bg-paper-warm/50 text-ink-mute transition-colors hover:border-vermillion/40 hover:text-vermillion"
-                >
-                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-line-strong">
-                    <Plus className="h-5 w-5" />
-                  </span>
-                  <span className="text-sm font-medium">新建仓库</span>
-                </motion.button>
+                {filteredRepos.length === 0 && (
+                  <div className="flex min-h-[180px] flex-col items-center justify-center gap-3 rounded-md border border-dashed border-line-strong bg-paper-warm/50 text-ink-mute md:col-span-2">
+                    <Search className="h-6 w-6" />
+                    <p className="text-sm">没有匹配的仓库</p>
+                  </div>
+                )}
               </motion.div>
             </motion.section>
 

@@ -3,7 +3,6 @@ import { PageShell } from "@/components/layout/PageShell";
 import { RepoTabs, type RepoTabKey } from "@/components/repo/RepoTabs";
 import { getRepo } from "@/data/repos";
 import { getIssuesForRepo } from "@/data/issues";
-import { getPullsForRepo } from "@/data/pulls";
 
 /**
  * 仓库布局 —— RepoTabs 常驻（不随子路由切换重新挂载），Outlet 渲染子页面内容
@@ -13,8 +12,7 @@ export function RepoLayout() {
   const repo = owner && repoName ? getRepo(owner, repoName) : undefined;
 
   const matchIssues = useMatch("/:owner/:repo/issues/*");
-  const matchPulls = useMatch("/:owner/:repo/pulls/*");
-  const currentTab: RepoTabKey = matchIssues ? "issues" : matchPulls ? "pulls" : "";
+  const currentTab: RepoTabKey = matchIssues ? "issues" : "";
 
   if (!repo) {
     return (
@@ -28,9 +26,7 @@ export function RepoLayout() {
   }
 
   const issues = getIssuesForRepo(`${repo.owner}/${repo.name}`);
-  const pulls = getPullsForRepo(`${repo.owner}/${repo.name}`);
   const openIssues = issues.filter((i) => i.status === "open").length;
-  const openPRs = pulls.filter((p) => p.status === "open").length;
 
   return (
     <PageShell showFooter={false}>
@@ -44,7 +40,6 @@ export function RepoLayout() {
           watchers={repo.watchers}
           topics={repo.topics}
           openIssues={openIssues}
-          openPRs={openPRs}
           currentTab={currentTab}
         />
         <Outlet />
