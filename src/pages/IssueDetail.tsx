@@ -14,16 +14,20 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { IssueStatusBadge, LabelBadge } from "@/components/ui/Badge";
 import { getRepo } from "@/data/repos";
-import { getUser } from "@/data/users";
+import { getUser, currentUser } from "@/data/users";
 import { getIssue } from "@/data/issues";
 import { timeAgo } from "@/lib/format";
 import { pageTransition } from "@/lib/motion";
+import type { IssueComment } from "@/types";
 
 export default function IssueDetail() {
   const { owner, repo: repoName, id } = useParams<{ owner: string; repo: string; id: string }>();
   const repo = owner && repoName ? getRepo(owner, repoName) : undefined;
   const issue = owner && repoName && id ? getIssue(`${owner}/${repoName}`, Number(id)) : undefined;
   const [status, setStatus] = useState<"open" | "closed">(issue?.status ?? "open");
+  // 演示站点无后端：评论在本地 state 追加，刷新后丢弃（保持与静态数据一致）
+  const [commentText, setCommentText] = useState("");
+  const [localComments, setLocalComments] = useState<IssueComment[]>([]);
 
   // RepoLayout 已处理仓库不存在的 404
   if (!repo) return null;
@@ -52,6 +56,7 @@ export default function IssueDetail() {
   const author = getUser(issue.author);
   const assignee = issue.assignee ? getUser(issue.assignee) : undefined;
   const open = status === "open";
+  const allComments = [...issue.comments, ...localComments];
 
   return (
     <motion.div
@@ -93,7 +98,7 @@ export default function IssueDetail() {
           </div>
           <span className="inline-flex items-center gap-1.5 font-mono text-xs">
             <MessageSquare className="h-3.5 w-3.5" />
-            {issue.comments.length} 条评论
+            {allComments.length} 条评论
           </span>
         </div>
       </div>
@@ -130,7 +135,7 @@ export default function IssueDetail() {
 
           {/* 评论时间线 */}
           <div className="flex flex-col gap-4">
-            {issue.comments.map((c, i) => {
+            {allComments.map((c, i) => {
               const user = getUser(c.author);
               return (
                 <motion.div
@@ -154,7 +159,7 @@ export default function IssueDetail() {
                 </motion.div>
               );
             })}
-            {issue.comments.length === 0 && (
+            {allComments.length === 0 && (
               <div className="rounded-md border border-dashed border-line-subtle py-12 text-center text-ink-mute">
                 暂无评论
               </div>
@@ -165,14 +170,39 @@ export default function IssueDetail() {
           <div className="overflow-hidden rounded-md border border-line-subtle bg-paper-pure">
             <div className="border-b border-line-subtle px-4 py-2.5 text-sm text-ink-soft">留下评论</div>
             <textarea
-              placeholder="写下你的想法..."
-              className="h-24 w-full resize-none bg-transparent px-4 py-3 text-sm text-ink placeholder:text-ink-mute outline-none"
+              name="comment"
+              aria-label="评论内容"
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              placeholder="写下你的想法…"
+              className="h-24 w-full resize-none bg-transparent px-4 py-3 text-sm text-ink placeholder:text-ink-mute outline-hidden"
             />
             <div className="flex justify-end gap-2 border-t border-line-subtle px-4 py-2.5">
-              <Button variant="secondary" size="sm">
+              <Button
+                variant="secondary"
+                size="sm"
+                disabled={!commentText.trim()}
+                onClick={() => setCommentText("")}
+              >
                 取消
               </Button>
-              <Button size="sm">评论</Button>
+              <Button
+                size="sm"
+                disabled={!commentText.trim()}
+                onClick={() => {
+                  setLocalComments((prev) => [
+                    ...prev,
+                    {
+                      author: currentUser.username,
+                      body: commentText.trim(),
+                      createdAt: new Date().toISOString(),
+                    },
+                  ]);
+                  setCommentText("");
+                }}
+              >
+                评论
+              </Button>
             </div>
           </div>
         </div>

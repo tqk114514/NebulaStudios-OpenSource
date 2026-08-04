@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useInView, animate } from "motion/react";
+import { useInView, animate, useReducedMotion } from "motion/react";
 
 interface CountUpProps {
   to: number;
@@ -20,20 +20,24 @@ export function CountUp({
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const [display, setDisplay] = useState(from);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    if (!inView) return;
+    if (!inView || reduceMotion) return;
     const controls = animate(from, to, {
       duration,
       ease: [0.22, 1, 0.36, 1],
       onUpdate: (v) => setDisplay(v),
     });
     return () => controls.stop();
-  }, [inView, to, from, duration]);
+  }, [inView, to, from, duration, reduceMotion]);
+
+  // prefers-reduced-motion：派生值直接显示最终结果，不经过计数动画
+  const shown = reduceMotion ? to : display;
 
   return (
     <span ref={ref} className={className}>
-      {format(display)}
+      {format(shown)}
     </span>
   );
 }

@@ -38,7 +38,8 @@ function generateData(seed: string) {
       if (r > 0.55) count = Math.floor(rand() * 4) + 1;
       if (r > 0.92) count = Math.floor(rand() * 8) + 5;
       if (d >= 5 && r < 0.7) count = 0;
-      const ds = date.toISOString().slice(0, 10);
+      // 本地日期（避免 toISOString 的 UTC 跨天错位）
+      const ds = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
       week.push({ count, date: ds });
     }
     weeks.push(week);
@@ -122,6 +123,7 @@ export function Heatmap({ username, className }: HeatmapProps) {
                     }}
                     onMouseEnter={() => setHover(cell)}
                     onMouseLeave={() => setHover(null)}
+                    title={cell.count < 0 ? undefined : `${cell.date}：${cell.count} 次提交`}
                     className="h-[12px] w-[12px] rounded-xs border border-line-subtle transition-transform hover:scale-125"
                     style={{ backgroundColor: levelColor(cell.count) }}
                   />

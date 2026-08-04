@@ -1,5 +1,5 @@
 ﻿import { BrowserRouter, Routes, Route, useLocation } from "react-router";
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence, MotionConfig } from "motion/react";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { Navbar } from "@/components/layout/Navbar";
 import { RepoLayout } from "@/components/repo/RepoLayout";
@@ -82,10 +82,16 @@ function AnimatedRoutes() {
 
 function AppShell() {
   const { pathname } = useLocation();
-  // Landing 首页自带 Hero，不显示顶栏；其余页面常驻顶栏（不随路由切换重新挂载）
-  const showNavbar = pathname !== "/";
+  // Landing 首页自带 Hero，不显示顶栏；登录页全屏展示，也不显示（避免"登录"按钮自指）
+  const showNavbar = pathname !== "/" && pathname !== "/login";
   return (
     <>
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-vermillion focus:px-4 focus:py-2 focus:text-sm focus:text-paper-pure"
+      >
+        跳到主要内容
+      </a>
       <AnimatePresence>
         {showNavbar && <Navbar key="navbar" />}
       </AnimatePresence>
@@ -97,7 +103,9 @@ function AppShell() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AppShell />
+      <MotionConfig reducedMotion="user">
+        <AppShell />
+      </MotionConfig>
     </BrowserRouter>
   );
 }

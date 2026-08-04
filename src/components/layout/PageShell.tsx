@@ -16,7 +16,7 @@ export function PageShell({
 }: PageShellProps) {
   return (
     <div className="relative min-h-screen">
-      <main className={cn("relative pt-16", className)}>{children}</main>
+      <main id="main" className={cn("relative pt-16", className)}>{children}</main>
       {showFooter && <Footer />}
     </div>
   );

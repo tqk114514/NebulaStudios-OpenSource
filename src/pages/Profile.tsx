@@ -20,7 +20,7 @@ import { getUser, currentUser } from "@/data/users";
 import { getRepoByKey } from "@/data/repos";
 import { getActivitiesForUser } from "@/data/activity";
 import { staggerContainer, fadeUp, viewportOnce } from "@/lib/motion";
-import { compactNumber } from "@/lib/format";
+import { compactNumber, formatDate } from "@/lib/format";
 
 export default function Profile() {
   const { username } = useParams<{ username: string }>();
@@ -98,7 +98,7 @@ export default function Profile() {
                 )}
                 <span className="inline-flex items-center gap-1.5">
                   <Calendar className="h-4 w-4 text-ink-mute" />
-                  加入于 {user.joinedAt}
+                  加入于 {formatDate(user.joinedAt)}
                 </span>
               </div>
             </div>
@@ -123,15 +123,15 @@ export default function Profile() {
               { icon: Users, value: user.followers, label: "关注者" },
               { icon: UserPlus, value: user.following, label: "正在关注" },
             ].map((s) => (
-              <button
+              <div
                 key={s.label}
-                className="flex flex-col items-center gap-1 bg-paper-pure px-4 py-4 transition-colors hover:bg-paper-warm"
+                className="flex flex-col items-center gap-1 bg-paper-pure px-4 py-4"
               >
                 <span className="font-display text-2xl text-ink">{compactNumber(s.value)}</span>
                 <span className="meta-caps text-ink-mute">
                   {s.label}
                 </span>
-              </button>
+              </div>
             ))}
           </div>
         </motion.div>

@@ -18,6 +18,7 @@ import { currentUser } from "@/data/users";
 import { repos } from "@/data/repos";
 import { getFeedActivities } from "@/data/activity";
 import { staggerContainer, fadeUp } from "@/lib/motion";
+import { compactNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 // 单用户自托管场景：只保留有落点的导航项（其余无对应页面，已移除）
@@ -29,6 +30,10 @@ const navItems = [
 export default function Dashboard() {
   const myRepos = repos.filter((r) => r.owner === currentUser.username);
   const feed = getFeedActivities();
+
+  // 按时段问候（演示数据是静态快照，问候语应匹配访问时刻）
+  const hour = new Date().getHours();
+  const greeting = hour < 6 ? "夜深了" : hour < 12 ? "早上好" : hour < 18 ? "下午好" : "晚上好";
 
   // 我的仓库搜索（本地过滤）
   const [query, setQuery] = useState("");
@@ -73,10 +78,10 @@ export default function Dashboard() {
               </div>
               <div className="mt-4 flex gap-4 text-sm text-ink-soft">
                 <span>
-                  <span className="font-semibold text-ink">{currentUser.followers}</span> 关注者
+                  <span className="font-semibold text-ink">{compactNumber(currentUser.followers)}</span> 关注者
                 </span>
                 <span>
-                  <span className="font-semibold text-ink">{currentUser.following}</span> 关注中
+                  <span className="font-semibold text-ink">{compactNumber(currentUser.following)}</span> 关注中
                 </span>
               </div>
             </motion.div>
@@ -117,7 +122,7 @@ export default function Dashboard() {
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <h1 className="font-display text-3xl text-ink">
-                    下午好，<span className="text-vermillion">{currentUser.name.split(" ")[0]}</span>
+                    {greeting}，<span className="text-vermillion">{currentUser.name.split(" ")[0]}</span>
                   </h1>
                   <p className="mt-1 text-sm text-ink-soft">
                     你有 3 个未读通知，2 个 Issue 等待处理。
@@ -139,6 +144,9 @@ export default function Dashboard() {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="在你的仓库中搜索..."
+                  aria-label="在你的仓库中搜索"
+                  name="q"
+                  autoComplete="off"
                   className="h-11 w-full rounded-md border border-line-subtle bg-paper-pure pl-10 pr-4 text-sm text-ink placeholder:text-ink-mute outline-hidden focus:border-vermillion/40"
                 />
               </div>

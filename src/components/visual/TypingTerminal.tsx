@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 
 interface TypingTerminalProps {
   className?: string;
@@ -160,8 +160,36 @@ export function TypingTerminal({ className }: TypingTerminalProps) {
   const [typingActive, setTypingActive] = useState(false);
   const [done, setDone] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
+    // prefers-reduced-motion：跳过全部打字/进度/build 动画，直接渲染完成态输出
+    // （setTimeout 延迟到 effect 之后应用，避免 effect 内同步 setState）
+    if (reduceMotion) {
+      const t = window.setTimeout(() => {
+        const staticLines: { text: string; className?: string }[] = [];
+        for (const line of script) {
+          if (line.kind === "text") {
+            staticLines.push({ text: line.text, className: line.className });
+          } else if (line.kind === "progress") {
+            staticLines.push({
+              text: `Receiving objects: 100% (${REPO_OBJECTS}/${REPO_OBJECTS}), ${line.totalMiB.toFixed(2)} MiB | ${SPEED_MODE.toFixed(2)} MiB/s, done.`,
+              className: "text-prussian",
+            });
+          } else {
+            const snap = BUILD_SNAPSHOTS[BUILD_SNAPSHOTS.length - 1];
+            staticLines.push(...snap.map((t) => ({ text: t, className: "text-prussian" })));
+          }
+        }
+        setLines(staticLines);
+        setProgressLine(null);
+        setBuildSnapshot(null);
+        setTypingActive(false);
+        setDone(true);
+      }, 0);
+      return () => window.clearTimeout(t);
+    }
+
     let cancelled = false;
     const wait = (ms: number) => new Promise<void>((res) => setTimeout(res, ms));
 
@@ -265,7 +293,7 @@ export function TypingTerminal({ className }: TypingTerminalProps) {
 
     play();
     return () => { cancelled = true; };
-  }, []);
+  }, [reduceMotion]);
 
   useEffect(() => {
     if (containerRef.current) {

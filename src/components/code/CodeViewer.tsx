@@ -31,7 +31,7 @@ export function CodeViewer({
   }
 
   return (
-    <div className={cn("overflow-hidden rounded-md border border-line-subtle bg-paper-pure shadow-card", className)}>
+    <div className={cn("relative overflow-hidden rounded-md border border-line-subtle bg-paper-pure shadow-card", className)}>
       {filename && (
         <div className="flex items-center justify-between border-b border-line-subtle bg-paper-warm px-4 py-2">
           <span className="font-mono text-xs text-ink-soft">{filename}</span>

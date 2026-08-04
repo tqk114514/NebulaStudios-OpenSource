@@ -320,14 +320,7 @@ a {
 }
 
 /* —— 滚动条（极简纸感）—— */
-/* 全局（html）滚动条隐藏，元素内部滚动条保留 */
-html::-webkit-scrollbar {
-  display: none;
-}
-html {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
+/* html 与元素内部统一纸感细滚动条；需要隐藏的容器用 .no-scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

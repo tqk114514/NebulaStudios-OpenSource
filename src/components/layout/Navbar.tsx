@@ -1,15 +1,16 @@
-﻿import { useEffect, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { Search, Menu, X, Plus } from "lucide-react";
 import { BrandMark } from "@/components/ui/BrandMark";
 import { Button } from "@/components/ui/Button";
+import { currentUser } from "@/data/users";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
   { to: "/explore", label: "探索" },
   { to: "/dashboard", label: "仪表盘" },
-  { to: "/aurora", label: "个人主页" },
+  { to: `/${currentUser.username}`, label: "个人主页" },
 ];
 
 /**
@@ -24,6 +25,24 @@ export function Navbar() {
   const navigate = useNavigate();
   // Explore 页自带大搜索框,此处隐藏导航栏搜索框避免重复
   const hideSearch = location.pathname === "/explore";
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  // "/" 快捷键聚焦导航栏搜索框（输入中不拦截；Explore 页搜索框隐藏时不抢焦点）
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "/") return;
+      const target = e.target as HTMLElement | null;
+      const typing =
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target?.isContentEditable;
+      if (typing) return;
+      e.preventDefault();
+      if (!hideSearch) searchRef.current?.focus();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [hideSearch]);
 
   useEffect(() => {
     let raf = 0;
@@ -110,6 +129,7 @@ export function Navbar() {
                 <div className="relative">
                   <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-mute" />
                   <input
+                    ref={searchRef}
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -119,6 +139,9 @@ export function Navbar() {
                       }
                     }}
                     placeholder="搜索仓库 / 用户 / 主题..."
+                    aria-label="搜索仓库 / 用户 / 主题"
+                    name="q"
+                    autoComplete="off"
                     className="h-9 w-56 rounded-md border border-line-subtle bg-paper-pure pl-9 pr-12 text-sm text-ink placeholder:text-ink-mute outline-hidden transition-colors focus:border-vermillion/60 lg:w-64"
                   />
                   <kbd className="absolute right-2.5 top-1/2 hidden -translate-y-1/2 rounded border border-line-subtle bg-paper-warm px-1.5 py-0.5 font-mono text-[0.65rem] text-ink-mute lg:block">

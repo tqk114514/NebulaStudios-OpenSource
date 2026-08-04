@@ -20,7 +20,7 @@ type Mode = "login" | "register";
 
 /** 输入框样式 —— 与 Navbar 等组件统一描边（border-line-subtle + vermillion focus） */
 const inputCls =
-  "w-full h-11 rounded-md border border-line-subtle bg-paper-pure pl-10 pr-3 text-sm text-ink placeholder:text-ink-mute outline-none transition-colors focus:border-vermillion/50 focus:ring-2 focus:ring-vermillion/10";
+  "w-full h-11 rounded-md border border-line-subtle bg-paper-pure pl-10 pr-3 text-sm text-ink placeholder:text-ink-mute outline-hidden transition-colors focus:border-vermillion/60 focus:ring-2 focus:ring-vermillion/30";
 
 /**
  * 印刷感登录页 —— 左侧品牌叙事（纸格背景），右侧表单（纯白）
@@ -53,7 +53,7 @@ export default function Login() {
   ][strength];
 
   return (
-    <div className="relative min-h-screen grid lg:grid-cols-2">
+    <main id="main" className="relative min-h-screen grid lg:grid-cols-2">
       {/* 左：品牌叙事 */}
       <div className="relative hidden overflow-hidden border-r border-line-subtle bg-paper lg:block">
         <div className="absolute inset-0 bg-paper-grid bg-paper-grid-fade opacity-60" />
@@ -98,11 +98,11 @@ export default function Login() {
           </motion.div>
 
           <div className="mt-12 flex items-center gap-3 font-mono text-xs text-ink-mute">
-            <span>© 2026 Nebula OpenSource</span>
+            <span>© {new Date().getFullYear()} Nebula OpenSource</span>
             <span className="h-1 w-1 bg-ink-faint" />
-            <a href="#" className="hover:text-ink-soft">文档</a>
+            <span title="即将推出">文档</span>
             <span className="h-1 w-1 bg-ink-faint" />
-            <a href="#" className="hover:text-ink-soft">隐私</a>
+            <span title="即将推出">隐私</span>
           </div>
         </div>
       </div>
@@ -155,18 +155,25 @@ export default function Login() {
 
               <form onSubmit={handleSubmit} className="mt-7 flex flex-col gap-4">
                 {mode === "register" && (
-                  <Field label="用户名" icon={User} placeholder="aurora">
+                  <Field label="用户名" icon={User}>
                     <input
                       required
+                      name="username"
+                      autoComplete="username"
+                      spellCheck={false}
                       className={inputCls}
                       placeholder="aurora"
                     />
                   </Field>
                 )}
-                <Field label="邮箱" icon={Mail} placeholder="you@example.com">
+                <Field label="邮箱" icon={Mail}>
                   <input
                     type="email"
+                    inputMode="email"
                     required
+                    name="email"
+                    autoComplete="email"
+                    spellCheck={false}
                     className={inputCls}
                     placeholder="you@example.com"
                   />
@@ -177,6 +184,8 @@ export default function Login() {
                     <input
                       type={showPwd ? "text" : "password"}
                       required
+                      name="password"
+                      autoComplete={mode === "login" ? "current-password" : "new-password"}
                       value={pwd}
                       onChange={(e) => setPwd(e.target.value)}
                       className={cn(inputCls, "pr-10")}
@@ -221,10 +230,10 @@ export default function Login() {
                 {mode === "login" && (
                   <div className="flex items-center justify-between text-xs">
                     <label className="inline-flex items-center gap-2 text-ink-soft">
-                      <input type="checkbox" className="h-3.5 w-3.5 rounded border-line-strong bg-transparent accent-vermillion" />
+                      <input type="checkbox" name="remember" autoComplete="on" className="h-3.5 w-3.5 rounded border-line-strong bg-transparent accent-vermillion" />
                       记住我
                     </label>
-                    <a href="#" className="text-prussian hover:underline">忘记密码？</a>
+                    <span className="cursor-default text-ink-mute" title="即将推出">忘记密码？</span>
                   </div>
                 )}
 
@@ -238,7 +247,7 @@ export default function Login() {
                   {loading ? (
                     <span className="inline-flex items-center gap-2">
                       <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper-pure/40 border-t-paper-pure" />
-                      {mode === "login" ? "登录中..." : "创建中..."}
+                      {mode === "login" ? "登录中…" : "创建中…"}
                     </span>
                   ) : mode === "login" ? "登录" : "创建账户"}
                 </Button>
@@ -257,14 +266,13 @@ export default function Login() {
           </AnimatePresence>
         </motion.div>
       </div>
-    </div>
+    </main>
   );
 }
 
 interface FieldProps {
   label: string;
   icon: typeof Mail;
-  placeholder?: string;
   children: React.ReactNode;
 }
 

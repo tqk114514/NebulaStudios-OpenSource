@@ -1,5 +1,5 @@
-﻿import { useMemo, useState } from "react";
-import { Link, useParams } from "react-router";
+﻿import { useMemo } from "react";
+import { Link, useParams, useSearchParams } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import {
   CircleDot,
@@ -32,9 +32,25 @@ export default function Issues() {
     [owner, repoName],
   );
 
-  const [filter, setFilter] = useState<Filter>("all");
-  const [view, setView] = useState<View>("list");
-  const [query, setQuery] = useState("");
+  // 筛选状态全部写入 URL：刷新/前进后退/分享链接均保持视图
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filter = (searchParams.get("filter") as Filter) ?? "all";
+  const view = (searchParams.get("view") as View) ?? "list";
+  const query = searchParams.get("q") ?? "";
+
+  const updateParams = (patch: Record<string, string | null>) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        for (const [k, v] of Object.entries(patch)) {
+          if (v === null) next.delete(k);
+          else next.set(k, v);
+        }
+        return next;
+      },
+      { replace: true },
+    );
+  };
 
   const filtered = useMemo(() => {
     let list = allIssues;
@@ -73,7 +89,8 @@ export default function Issues() {
             {(["open", "closed", "all"] as Filter[]).map((f) => (
               <button
                 key={f}
-                onClick={() => setFilter(f)}
+                onClick={() => updateParams({ filter: f === "all" ? null : f })}
+                aria-pressed={filter === f}
                 className={cn(
                   "rounded-md px-3 py-1.5 text-sm transition-colors",
                   filter === f ? "bg-paper-pure text-ink shadow-card" : "text-ink-soft hover:text-ink",
@@ -88,8 +105,11 @@ export default function Issues() {
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-mute" />
             <input
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="筛选 issue..."
+              onChange={(e) => updateParams({ q: e.target.value.trim() ? e.target.value : null })}
+              placeholder="筛选 issue…"
+              aria-label="筛选 issue"
+              name="q"
+              autoComplete="off"
               className="h-9 w-full rounded-md border border-line-subtle bg-paper-pure pl-9 pr-3 text-sm text-ink placeholder:text-ink-mute outline-hidden focus:border-vermillion/40"
             />
           </div>
@@ -101,7 +121,8 @@ export default function Issues() {
             ]).map((t) => (
               <button
                 key={t.v}
-                onClick={() => setView(t.v)}
+                onClick={() => updateParams({ view: t.v })}
+                aria-pressed={view === t.v}
                 className={cn(
                   "inline-flex h-7 w-7 items-center justify-center rounded-md transition-colors",
                   view === t.v ? "bg-paper-pure text-ink shadow-card" : "text-ink-mute hover:text-ink",

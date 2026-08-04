@@ -1,24 +1,44 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useSearchParams } from "react-router";
 import { motion } from "motion/react";
 import { Search, Star, Clock } from "lucide-react";
 import { PageShell } from "@/components/layout/PageShell";
 import { RepoCard } from "@/components/shared/RepoCard";
 import { repos } from "@/data/repos";
-import { staggerContainer, fadeUp, viewportOnce } from "@/lib/motion";
+import { staggerContainer, fadeUp } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 type SortKey = "stars" | "recent";
 
 export default function Explore() {
-  // URL 参数 q 作为搜索唯一状态源：Navbar 搜索框回车后跳转到 /explore?q=...
+  // URL 参数作为唯一状态源：q 由 Navbar 搜索框写入，sort 由本页排序按钮写入
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("q") ?? "";
-  const [sort, setSort] = useState<SortKey>("stars");
+  const sort = (searchParams.get("sort") as SortKey) ?? "stars";
 
   const setQuery = (q: string) => {
-    if (q.trim()) setSearchParams({ q: q.trim() });
-    else setSearchParams({});
+    // 只更新 q，保留其余参数（如 sort），避免搜索时清空排序状态
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (q.trim()) next.set("q", q.trim());
+        else next.delete("q");
+        return next;
+      },
+      { replace: true },
+    );
+  };
+
+  const setSort = (s: SortKey) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (s === "stars") next.delete("sort");
+        else next.set("sort", s);
+        return next;
+      },
+      { replace: true },
+    );
   };
 
   const filtered = useMemo(() => {
@@ -68,6 +88,9 @@ export default function Explore() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="搜索仓库 / 用户 / 主题..."
+              aria-label="搜索仓库 / 用户 / 主题"
+              name="q"
+              autoComplete="off"
               className="h-12 w-full rounded-md border border-line-subtle bg-paper-pure pl-11 pr-4 text-sm text-ink placeholder:text-ink-mute outline-hidden transition-colors focus:border-vermillion/40 focus:bg-paper-pure"
             />
           </motion.div>
@@ -87,6 +110,7 @@ export default function Explore() {
                 <button
                   key={s.key}
                   onClick={() => setSort(s.key)}
+                  aria-pressed={sort === s.key}
                   className={cn(
                     "flex items-center gap-2 rounded-md px-3 py-1.5 text-left text-sm transition-colors",
                     sort === s.key
@@ -121,7 +145,6 @@ export default function Explore() {
           </motion.div>
         </div>
       </div>
-      <motion.div initial="hidden" whileInView="visible" viewport={viewportOnce} />
     </PageShell>
   );
 }

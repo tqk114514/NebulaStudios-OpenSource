@@ -16,7 +16,7 @@ export default function Landing() {
   const trending = [...repos].sort((a, b) => b.stars - a.stars).slice(0, 5);
 
   return (
-    <>
+    <main id="main">
       <Hero />
 
       <FeatureGrid />
@@ -90,6 +90,6 @@ export default function Landing() {
       <StatsBand />
       <CTASection />
       <Footer />
-    </>
+    </main>
   );
 }

@@ -1,5 +1,5 @@
-﻿import { useMemo, useState } from "react";
-import { Link, useParams } from "react-router";
+﻿import { useMemo } from "react";
+import { Link, useParams, useSearchParams } from "react-router";
 import { motion } from "motion/react";
 import {
   Star,
@@ -34,7 +34,9 @@ export default function Repository() {
     [owner, repoName],
   );
 
-  const [selectedPath, setSelectedPath] = useState("src/pack/reader.zig");
+  // 选中的文件路径写入 URL（?path=...）：刷新、前进后退、分享链接都能恢复
+  const [searchParams, setSearchParams] = useSearchParams();
+  const selectedPath = searchParams.get("path") ?? "src/pack/reader.zig";
 
   // RepoLayout 已处理仓库不存在的 404，子页面不会渲染；此处防御性返回
   if (!repo) return null;
@@ -92,7 +94,7 @@ export default function Repository() {
                 <FileTree
                   nodes={tree}
                   selectedPath={selectedPath}
-                  onSelect={(_node, path) => setSelectedPath(path)}
+                  onSelect={(_node, path) => setSearchParams({ path }, { replace: true })}
                   defaultExpanded={["src", "src/pack"]}
                 />
               </div>
